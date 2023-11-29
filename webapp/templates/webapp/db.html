@@ -1,0 +1,118 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WifiWalrus Database</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'webapp/css/styles.css' %}">
+</head>
+<body>
+    <div class="db-content">
+        <h2>
+            <a href="/" class="button" id="home-button">Home</a>
+            WifiWalrus Database
+            <img src="{% static 'webapp/icon-trans.png' %}" alt="Logo" class="db-logo">
+        </h2>
+        <form method="get" action="{% url 'myapp:db_view' %}" style="padding-left: 10px;">
+            <input type="search" name="q" placeholder="Search by SSID or BSSID" class="search-box">
+            <button type="submit" class="button" id="search-button">Search</button>
+            <a href="{% url 'myapp:db_view' %}" class="back-button" style="display: none;">Back</a>
+            <!-- <a href="{% url 'myapp:db_view' %}" class="button" id="back-button" style="display: none">Back</a>  -->
+        </form>
+        <div id="database-content">
+            {% if query %}
+                <p>Search results for: "{{ query }}"</p>
+                <p>{{ wifi_data|length }} results found.</p>
+            {% endif %}
+
+            <table id="database-table">
+                <thead>
+                    <tr>
+                        <th><span onclick="sortTable(0)">SSID</span></th>
+                        <th><span onclick="sortTable(1)">BSSID</span></th>
+                        <th><span onclick="sortTable(2)">Authentication Type</span></th>
+                        <th><span onclick="sortTable(3)">Signal Strength</span></th>
+                        <th><span onclick="sortTable(4)">Connection Score</span></th>
+                        <th><span onclick="sortTable(5)">Network Hash</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in wifi_data %}
+                        <tr>
+                            <td>{{ data.ssid }}</td>
+                            <td>{{ data.bssid }}</td>
+                            <td>{{ data.authType }}</td>
+                            <td>{{ data.signalStrength }}</td>
+                            <td>{{ data.connectionScore }}</td>
+                            <td>{{ data.networkHash }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    <div>
+        <script>
+            // Enable toggle sorting of columns between ascending/descending order
+            var sortingOrder = {};
+        
+            function sortTable(columnIndex) {
+                var table, rows, switching, i, x, y, shouldSwitch;
+                table = document.getElementById("database-table");
+                switching = true;
+        
+                // Set initial sorting order to ascending when first clicked
+                if (!sortingOrder[columnIndex]) {
+                    sortingOrder[columnIndex] = "asc";
+                } else {
+                    // Toggle sorting order between ascending and descending
+                    sortingOrder[columnIndex] = sortingOrder[columnIndex] === "asc" ? "desc" : "asc";
+                }
+        
+                while (switching) {
+                    switching = false;
+                    rows = table.getElementsByTagName("tr");
+        
+                    for (i = 1; i < rows.length - 1; i++) {
+                        shouldSwitch = false;
+                        x = rows[i].getElementsByTagName("td")[columnIndex];
+                        y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+        
+                        // Get the values for comparison
+                        var xValue = isNaN(x.innerHTML) ? x.innerHTML.toLowerCase() : parseFloat(x.innerHTML);
+                        var yValue = isNaN(y.innerHTML) ? y.innerHTML.toLowerCase() : parseFloat(y.innerHTML);
+        
+                        if (
+                            (sortingOrder[columnIndex] === "asc" && xValue > yValue) ||
+                            (sortingOrder[columnIndex] === "desc" && xValue < yValue)
+                        ) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+        
+                    if (shouldSwitch) {
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        switching = true;
+                    }
+                }
+            }
+        </script>
+        <script>
+            // Make back button appear after a search
+            // Get the current URL of the page
+            const currentURL = window.location.href;
+            
+            // Define the pattern you want to match (URL starting with a specific directory)
+            const directoryPattern = 'http://ec2-3-140-116-49.us-east-2.compute.amazonaws.com:8000/db/?q=';
+            
+            // Check if the current URL contains the specified directory pattern
+            if (currentURL.startsWith(directoryPattern)) {
+                // Show the back button if the pattern is found in the URL
+                const backButton = document.getElementsByClassName('back-button');
+                backButton.style.display = 'inline-block';
+            }
+        </script>
+</body>
+</html>

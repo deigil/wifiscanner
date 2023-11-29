@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WifiWalrus Landing Page</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'webapp/css/styles.css' %}">
+</head>
+<body>
+    <a href="admin/" class="button" id="admin-button">Admin Page</a>
+    <div class="landing-content">
+        <div id="matrix-container"></div>
+        <div class="container">
+            <img src="{% static 'webapp/icon-trans.png' %}" alt="Logo" class="landing-logo">
+            <h1>Welcome to WifiWalrus</h1>
+            <a href="db/" class="button" id="view-db-button">View Database</a>
+        </div>
+    </div>
+    <script>
+        const matrixContainer = document.getElementById('matrix-container');
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-={}[]|:;"<>,.?/~`';
+        const stringLength = 20;
+
+        function createMatrixCharacter() {
+            
+            const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
+
+            const character = document.createElement('div');
+            character.classList.add('matrix-character');
+            character.textContent = randomCharacter;
+            matrixContainer.appendChild(character);
+
+            const randomLeft = Math.random() * window.innerWidth;
+            character.style.left = `${randomLeft}px`;
+
+            character.addEventListener('animationiteration', () => {
+                matrixContainer.removeChild(character);
+            });
+        }
+
+        setInterval(createMatrixCharacter, 75); // Adjust the interval for the desired speed -->
+    </script>
+</body>
+</html>
