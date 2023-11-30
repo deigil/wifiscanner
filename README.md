@@ -1,3 +1,4 @@
+![wifi walrus logo](http://ec2-3-140-116-49.us-east-2.compute.amazonaws.com:8000/static/webapp/icon-trans.png)
 # Wifi Scanner App Backend
 
 Welcome to the Wifi Scanner App Backend repository! This project is part of the Illinois Institute of Technology IPRO program for Fall 2023 and serves as the backend infrastructure for a Wifi scanning app.
